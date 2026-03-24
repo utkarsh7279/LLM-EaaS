@@ -17,7 +17,7 @@ docker compose up -d
 ### 2) Initialize Database
 
 ```bash
-psql postgresql://postgres:postgres@localhost:5432/llm_eaas -f backend/db/schema.sql
+psql postgresql://postgres:postgres@localhost:5433/llm_eaas -f backend/db/schema.sql
 ```
 
 ### 3) Configure Environment
@@ -69,6 +69,7 @@ npm run dev
 | [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) | Navigation guide for all docs |
 | [API_DOCUMENTATION.md](API_DOCUMENTATION.md) | Complete API reference with examples |
 | [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | Local, Docker, AWS, GCP, Azure deployment |
+| [OPERATIONS_RUNBOOK.md](OPERATIONS_RUNBOOK.md) | Deployment-day checklist and smoke tests |
 | [CONFIGURATION_REFERENCE.md](CONFIGURATION_REFERENCE.md) | All environment variables & settings |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues & solutions |
 | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) | Quick lookup card |
@@ -152,7 +153,7 @@ See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for detailed examples.
 
 ```dotenv
 # Required
-LLM_EAAS_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/llm_eaas
+LLM_EAAS_DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5433/llm_eaas
 
 # LLM Provider (choose one)
 LLM_EAAS_LLM_PROVIDER=ollama  # or "openai"
@@ -241,7 +242,7 @@ A sample CSV dataset with 10 evaluation items is included:
 **Database connection failed?**
 ```bash
 docker compose ps postgres  # Verify running
-psql postgresql://postgres:postgres@localhost:5432/llm_eaas -c "SELECT 1"
+psql postgresql://postgres:postgres@localhost:5433/llm_eaas -c "SELECT 1"
 ```
 
 **LLM not responding?**
