@@ -71,3 +71,11 @@ docker-compose.override.yml
 
 # OS
 Thumbs.db
+
+# Local temporary planning docs
+DOCUMENTATION_PLAN.md
+ENV_VARS_REFERENCE.md
+RENDER_DEPLOYMENT_CHECKLIST.md
+START_HERE.md
+ZERO_COST_DEPLOYMENT.md
+PROJECT_OVERVIEW_AND_PURPOSE.md
