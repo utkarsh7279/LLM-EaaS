@@ -47,7 +47,7 @@ async def upload_experiment(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Unexpected upload failure")
-        raise HTTPException(status_code=500, detail=f"Upload failed unexpectedly: {exc}") from exc
+        raise HTTPException(status_code=500, detail="Upload failed unexpectedly") from exc
 
 
 @router.post("/run", response_model=ExperimentDetailResponse)
@@ -63,7 +63,7 @@ async def run_experiment(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Unexpected run failure")
-        raise HTTPException(status_code=500, detail=f"Run failed unexpectedly: {exc}") from exc
+        raise HTTPException(status_code=500, detail="Run failed unexpectedly") from exc
 
 
 @router.get("/{experiment_id}", response_model=ExperimentDetailResponse)
