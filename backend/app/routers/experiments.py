@@ -45,6 +45,9 @@ async def upload_experiment(
     except ValueError as exc:
         logger.warning("Upload failed: %s", exc)
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Unexpected upload failure")
+        raise HTTPException(status_code=500, detail="Upload failed unexpectedly") from exc
 
 
 @router.post("/run", response_model=ExperimentDetailResponse)
@@ -70,6 +73,9 @@ async def get_experiment(
         return await service.get_experiment(experiment_id)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Unexpected get_experiment failure")
+        raise HTTPException(status_code=500, detail="Failed to fetch experiment") from exc
 
 
 @router.get("/compare", response_model=ExperimentCompareResponse)
@@ -95,3 +101,6 @@ async def ci_gate(
         return await service.ci_gate(experiment_id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Unexpected ci_gate failure")
+        raise HTTPException(status_code=500, detail="Failed to evaluate CI gate") from exc

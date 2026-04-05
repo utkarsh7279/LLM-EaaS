@@ -1,10 +1,9 @@
--- LLM EaaS database schema (Postgres + pgvector)
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS vector;
+-- LLM EaaS database schema
+-- Note: primary keys are provided by the application layer (uuid4),
+-- so this schema does not require DB extensions for UUID generation.
 
 CREATE TABLE IF NOT EXISTS experiments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     name TEXT,
     description TEXT,
     status TEXT NOT NULL DEFAULT 'created',
@@ -13,7 +12,7 @@ CREATE TABLE IF NOT EXISTS experiments (
 );
 
 CREATE TABLE IF NOT EXISTS evaluation_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     experiment_id UUID NOT NULL REFERENCES experiments(id) ON DELETE CASCADE,
     prompt TEXT NOT NULL,
     model_output TEXT NOT NULL,
@@ -22,7 +21,7 @@ CREATE TABLE IF NOT EXISTS evaluation_items (
 );
 
 CREATE TABLE IF NOT EXISTS evaluation_results (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     experiment_id UUID NOT NULL REFERENCES experiments(id) ON DELETE CASCADE,
     item_id UUID NOT NULL REFERENCES evaluation_items(id) ON DELETE CASCADE,
     rubric_scores JSONB NOT NULL,
@@ -32,7 +31,7 @@ CREATE TABLE IF NOT EXISTS evaluation_results (
 );
 
 CREATE TABLE IF NOT EXISTS experiment_metrics (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     experiment_id UUID NOT NULL UNIQUE REFERENCES experiments(id) ON DELETE CASCADE,
     mean_score DOUBLE PRECISION NOT NULL,
     safety_fail_rate DOUBLE PRECISION NOT NULL,

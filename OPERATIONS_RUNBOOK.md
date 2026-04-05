@@ -48,6 +48,13 @@ This runbook is for day-of-deployment execution and post-deploy validation of th
 
 ## 3. Post-Deployment Smoke Tests
 
+### One-command smoke test (recommended)
+- `cd /Users/utkarshraj/LLM\ EaaS && chmod +x post_deploy_smoke_test.sh`
+- Full check (includes evaluation):
+   - `./post_deploy_smoke_test.sh https://your-backend-domain`
+- Fast check (skips LLM evaluation):
+   - `RUN_EVALUATION=0 ./post_deploy_smoke_test.sh https://your-backend-domain`
+
 ### Core Health
 - `curl -sSf http://localhost:8000/health`
 - Expected response: `{"status":"ok"}`
