@@ -49,6 +49,13 @@ class OpenAIClient:
                 )
                 response.raise_for_status()
                 response_data = response.json()
+        except httpx.HTTPStatusError as exc:
+            logger.exception(f"{settings.llm_provider.upper()} request failed with HTTP error")
+            status_code = exc.response.status_code if exc.response is not None else "unknown"
+            response_text = exc.response.text if exc.response is not None else ""
+            raise RuntimeError(
+                f"LLM judge request failed: HTTP {status_code} {response_text}"
+            ) from exc
         except Exception as exc:
             logger.exception(f"{settings.llm_provider.upper()} request failed")
             raise RuntimeError(f"LLM judge request failed: {exc}") from exc
