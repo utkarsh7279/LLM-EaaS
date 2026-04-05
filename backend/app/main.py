@@ -28,6 +28,16 @@ def create_app() -> FastAPI:
     # Routers are thin; business logic lives in services for testability.
     app.include_router(experiments_router, prefix="/experiments", tags=["experiments"])
 
+    @app.get("/")
+    def root() -> dict[str, str]:
+        """Root endpoint for quick service checks in a browser."""
+        return {
+            "service": "LLM Evaluation-as-a-Service",
+            "status": "ok",
+            "health": "/health",
+            "docs": "/docs",
+        }
+
     @app.get("/health")
     def health_check() -> dict[str, str]:
         """Simple health check endpoint."""
