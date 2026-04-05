@@ -44,6 +44,8 @@ class ExperimentService:
         if not self._settings.baseline_experiment_id and not await self._baseline_exists():
             experiment.is_baseline = True
         self._session.add(experiment)
+        # Ensure parent row exists before inserting dependent evaluation_items.
+        await self._session.flush()
 
         items = [
             EvaluationItem(
