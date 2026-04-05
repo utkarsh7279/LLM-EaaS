@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +19,24 @@ class Settings(BaseSettings):
     allowed_origins: list[str] = ["http://localhost:3000"]
 
     database_url: str = Field(..., description="Async SQLAlchemy database URL")
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        """Ensure DB URL uses asyncpg driver for SQLAlchemy async engine."""
+        if not isinstance(value, str):
+            return value
+
+        if value.startswith("postgresql+asyncpg://"):
+            return value
+
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+asyncpg://", 1)
+
+        return value
 
     # LLM Provider Settings
     llm_provider: str = Field(default="ollama", description="LLM provider: 'openai' or 'ollama'")
