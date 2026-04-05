@@ -51,7 +51,7 @@ class OpenAIClient:
                 response_data = response.json()
         except Exception as exc:
             logger.exception(f"{settings.llm_provider.upper()} request failed")
-            raise RuntimeError("LLM judge request failed") from exc
+            raise RuntimeError(f"LLM judge request failed: {exc}") from exc
 
         content = (
             response_data.get("choices", [{}])[0]
