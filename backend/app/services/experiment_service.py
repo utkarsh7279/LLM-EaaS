@@ -190,7 +190,11 @@ class ExperimentService:
     async def _get_baseline_experiment_id(self) -> str:
         """Resolve the current baseline experiment id for regression checks."""
         if self._settings.baseline_experiment_id:
-            return self._settings.baseline_experiment_id
+            try:
+                UUID(self._settings.baseline_experiment_id)
+                return self._settings.baseline_experiment_id
+            except (ValueError, TypeError):
+                self._logger.warning("Invalid baseline_experiment_id configured; falling back to DB baseline")
 
         statement = select(Experiment).where(Experiment.is_baseline.is_(True)).order_by(Experiment.created_at.desc())
         result = await self._session.execute(statement)
