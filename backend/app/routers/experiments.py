@@ -61,6 +61,9 @@ async def run_experiment(
     except ValueError as exc:
         logger.warning("Run failed: %s", exc)
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.exception("Unexpected run failure")
+        raise HTTPException(status_code=500, detail=f"Run failed unexpectedly: {exc}") from exc
 
 
 @router.get("/{experiment_id}", response_model=ExperimentDetailResponse)
