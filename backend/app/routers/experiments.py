@@ -61,6 +61,9 @@ async def run_experiment(
     except ValueError as exc:
         logger.warning("Run failed: %s", exc)
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        logger.exception("Run failed due to upstream LLM provider error")
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:
         logger.exception("Unexpected run failure")
         raise HTTPException(status_code=500, detail="Run failed unexpectedly") from exc
