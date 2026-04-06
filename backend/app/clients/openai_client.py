@@ -1,4 +1,4 @@
-"""LLM client wrapper supporting OpenAI and Ollama."""
+"""LLM client wrapper supporting OpenAI-compatible providers and Ollama."""
 
 from __future__ import annotations
 
@@ -16,15 +16,19 @@ class OpenAIClient:
         settings = get_settings()
         logger = logging.getLogger(__name__)
 
-        # Determine which provider to use
-        if settings.llm_provider == "ollama":
+        provider = settings.llm_provider.lower()
+
+        # Determine which provider to use.
+        if provider == "ollama":
             base_url = settings.llm_base_url or "http://localhost:11434/v1"
             api_key = "ollama"  # Ollama doesn't need a real API key
             model = settings.llm_model
-        else:  # openai
+        elif provider in {"openai", "groq"}:
             base_url = settings.llm_base_url
             api_key = settings.llm_api_key or settings.openai_api_key
             model = settings.llm_model or settings.openai_model
+        else:
+            raise ValueError(f"Unsupported LLM provider: {settings.llm_provider}")
 
         payload = {
             "model": model,
@@ -34,7 +38,7 @@ class OpenAIClient:
             ],
             "temperature": temperature,
         }
-        if settings.llm_provider == "openai":
+        if provider == "openai":
             payload["response_format"] = {"type": "json_object"}
 
         try:
@@ -49,7 +53,7 @@ class OpenAIClient:
                 )
 
                 if (
-                    settings.llm_provider == "openai"
+                    provider == "openai"
                     and response.status_code == 400
                     and "response_format" in payload
                 ):
@@ -71,11 +75,11 @@ class OpenAIClient:
                 response.raise_for_status()
                 response_data = response.json()
         except httpx.HTTPStatusError as exc:
-            logger.exception(f"{settings.llm_provider.upper()} request failed with HTTP error")
+            logger.exception(f"{provider.upper()} request failed with HTTP error")
             status_code = exc.response.status_code if exc.response is not None else "unknown"
             raise RuntimeError(f"LLM judge request failed with HTTP {status_code}") from exc
         except Exception as exc:
-            logger.exception(f"{settings.llm_provider.upper()} request failed")
+            logger.exception(f"{provider.upper()} request failed")
             raise RuntimeError("LLM judge request failed") from exc
 
         content = (
@@ -84,7 +88,7 @@ class OpenAIClient:
             .get("content")
         )
         if not content:
-            logger.error(f"{settings.llm_provider.upper()} response missing content")
+            logger.error(f"{provider.upper()} response missing content")
             raise RuntimeError("LLM judge returned empty response")
 
         return content

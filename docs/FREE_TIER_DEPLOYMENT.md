@@ -37,7 +37,7 @@ This guide deploys LLM EaaS with zero required monthly spend.
 Required values:
 - LLM_EAAS_DATABASE_URL=<converted internal DB URL>
 - LLM_EAAS_ALLOWED_ORIGINS=["*"]
-- LLM_EAAS_LLM_PROVIDER=openai
+- LLM_EAAS_LLM_PROVIDER=groq
 - LLM_EAAS_LLM_BASE_URL=https://api.groq.com/openai/v1
 - LLM_EAAS_LLM_MODEL=mixtral-8x7b-32768
 - LLM_EAAS_LLM_API_KEY=<your_groq_key>

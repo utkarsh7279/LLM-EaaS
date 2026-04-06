@@ -39,7 +39,7 @@ class Settings(BaseSettings):
         return value
 
     # LLM Provider Settings
-    llm_provider: str = Field(default="ollama", description="LLM provider: 'openai' or 'ollama'")
+    llm_provider: str = Field(default="ollama", description="LLM provider: 'groq', 'openai', or 'ollama'")
     llm_model: str = Field(default="llama3.2", description="Model name to use")
     llm_base_url: Optional[str] = Field(default=None, description="Base URL for LLM API (for Ollama: http://localhost:11434/v1)")
     llm_api_key: str = Field(default="not-needed", description="API key (not needed for Ollama)")
