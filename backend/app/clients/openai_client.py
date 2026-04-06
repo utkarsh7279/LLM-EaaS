@@ -26,18 +26,18 @@ class OpenAIClient:
             api_key = settings.llm_api_key or settings.openai_api_key
             model = settings.llm_model or settings.openai_model
 
-        try:
-            payload = {
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                "temperature": temperature,
-            }
-            if settings.llm_provider == "openai":
-                payload["response_format"] = {"type": "json_object"}
+        payload = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "temperature": temperature,
+        }
+        if settings.llm_provider == "openai":
+            payload["response_format"] = {"type": "json_object"}
 
+        try:
             with httpx.Client(timeout=settings.llm_timeout_seconds) as client:
                 response = client.post(
                     f"{base_url.rstrip('/')}/chat/completions",
@@ -47,6 +47,27 @@ class OpenAIClient:
                     },
                     json=payload,
                 )
+
+                if (
+                    settings.llm_provider == "openai"
+                    and response.status_code == 400
+                    and "response_format" in payload
+                ):
+                    # Some OpenAI-compatible providers reject response_format=json_object.
+                    logger.warning(
+                        "Provider rejected response_format=json_object; retrying without response_format"
+                    )
+                    retry_payload = dict(payload)
+                    retry_payload.pop("response_format", None)
+                    response = client.post(
+                        f"{base_url.rstrip('/')}/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {api_key}",
+                            "Content-Type": "application/json",
+                        },
+                        json=retry_payload,
+                    )
+
                 response.raise_for_status()
                 response_data = response.json()
         except httpx.HTTPStatusError as exc:
