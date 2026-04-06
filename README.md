@@ -223,6 +223,15 @@ python -m pytest tests/ -v
 # ====== 4 passed in 0.37s ======
 ```
 
+### Secret Scan (CI + Local)
+
+```bash
+chmod +x scripts/scan_secrets.sh
+./scripts/scan_secrets.sh
+```
+
+This check runs automatically in GitHub Actions via [secret-scan.yml](.github/workflows/secret-scan.yml).
+
 ### Production Verification (Frontend + Backend)
 
 ```bash
