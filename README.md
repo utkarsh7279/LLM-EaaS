@@ -248,6 +248,8 @@ This command checks:
 - Frontend bundle references your backend host
 - Full backend post-deploy smoke flow
 
+You can also run this remotely from GitHub Actions using [production-verify.yml](.github/workflows/production-verify.yml) via **Run workflow**.
+
 ---
 
 ## 📋 Sample Data

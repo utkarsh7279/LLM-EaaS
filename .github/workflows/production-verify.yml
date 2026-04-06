@@ -1,0 +1,31 @@
+name: Production Verify
+
+on:
+  workflow_dispatch:
+    inputs:
+      backend_url:
+        description: "Backend base URL (e.g. https://llm-eaas.onrender.com)"
+        required: true
+        type: string
+      frontend_url:
+        description: "Frontend base URL (e.g. https://frontend-chi-flame-36.vercel.app)"
+        required: true
+        type: string
+      run_evaluation:
+        description: "Run expensive LLM evaluation + CI gate"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run production verification
+        env:
+          RUN_EVALUATION: ${{ inputs.run_evaluation && '1' || '0' }}
+        run: |
+          chmod +x verify_production_deploy.sh
+          ./verify_production_deploy.sh "${{ inputs.backend_url }}" "${{ inputs.frontend_url }}" sample_data.csv
