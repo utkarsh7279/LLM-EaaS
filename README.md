@@ -223,6 +223,22 @@ python -m pytest tests/ -v
 # ====== 4 passed in 0.37s ======
 ```
 
+### Production Verification (Frontend + Backend)
+
+```bash
+chmod +x verify_production_deploy.sh
+RUN_EVALUATION=1 ./verify_production_deploy.sh \
+       https://llm-eaas.onrender.com \
+       https://frontend-chi-flame-36.vercel.app \
+       sample_data.csv
+```
+
+This command checks:
+- Frontend URL is reachable
+- Frontend bundle does not reference localhost
+- Frontend bundle references your backend host
+- Full backend post-deploy smoke flow
+
 ---
 
 ## 📋 Sample Data

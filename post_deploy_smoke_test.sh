@@ -113,12 +113,16 @@ if [[ "$experiment_status" != "200" ]]; then
 fi
 pass "Experiment details endpoint succeeded"
 
-gate_body="$tmp_dir/ci_gate.json"
-gate_status=$(request_with_status "GET" "$BASE_URL/experiments/$experiment_id/ci-gate" "$gate_body") || fail "CI gate request failed"
-if [[ "$gate_status" != "200" ]]; then
-  fail "CI gate returned HTTP $gate_status: $(cat "$gate_body")"
+if [[ "$RUN_EVALUATION" == "1" ]]; then
+  gate_body="$tmp_dir/ci_gate.json"
+  gate_status=$(request_with_status "GET" "$BASE_URL/experiments/$experiment_id/ci-gate" "$gate_body") || fail "CI gate request failed"
+  if [[ "$gate_status" != "200" ]]; then
+    fail "CI gate returned HTTP $gate_status: $(cat "$gate_body")"
+  fi
+  pass "CI gate endpoint succeeded"
+else
+  echo "[SKIP] CI gate skipped because RUN_EVALUATION=$RUN_EVALUATION"
 fi
-pass "CI gate endpoint succeeded"
 
 echo
 echo "Smoke test completed successfully."
