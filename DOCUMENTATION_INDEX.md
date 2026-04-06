@@ -1,6 +1,6 @@
 # 📑 Documentation Index
 
-**Last Updated**: March 24, 2026  
+**Last Updated**: April 6, 2026  
 **Project**: LLM Evaluation-as-a-Service (EaaS)  
 **Status**: ✅ Production Ready
 
@@ -263,6 +263,19 @@ Testing:        Database errors
 - Environment files excluded
 - Database backups ignored
 
+#### [.github/workflows/ci.yml](.github/workflows/ci.yml)
+- Runs backend tests and frontend build on push/PR
+- Includes frontend production dependency audit (`npm audit --omit=dev --audit-level=high`)
+
+#### [.github/workflows/secret-scan.yml](.github/workflows/secret-scan.yml)
+- Scans repository for leaked secrets on push/PR
+- Blocks merges when potential secret patterns are found
+
+#### [.github/workflows/production-verify.yml](.github/workflows/production-verify.yml)
+- Manual workflow (`workflow_dispatch`) for post-deploy production verification
+- Executes `verify_production_deploy.sh` against provided backend/frontend URLs
+- Optional expensive validation path using `run_evaluation=true`
+
 ---
 
 ## 📋 Documentation Navigation Guide
@@ -417,4 +430,4 @@ README.md (overview)
 
 **Status**: ✅ All documentation complete  
 **Ready**: Yes, for production deployment  
-**Last Updated**: February 19, 2026
+**Last Updated**: April 6, 2026

@@ -55,6 +55,21 @@ This runbook is for day-of-deployment execution and post-deploy validation of th
 - Fast check (skips LLM evaluation):
    - `RUN_EVALUATION=0 ./post_deploy_smoke_test.sh https://your-backend-domain`
 
+### Full production verification (frontend + backend)
+- `cd /Users/utkarshraj/LLM\ EaaS && chmod +x verify_production_deploy.sh`
+- Full check (includes evaluation):
+   - `RUN_EVALUATION=1 ./verify_production_deploy.sh https://your-backend-domain https://your-frontend-domain sample_data.csv`
+- Fast check (skips LLM evaluation + CI gate):
+   - `RUN_EVALUATION=0 ./verify_production_deploy.sh https://your-backend-domain https://your-frontend-domain sample_data.csv`
+
+### Remote manual verification via GitHub Actions
+- Open Actions -> `Production Verify` workflow.
+- Click `Run workflow` and provide:
+  - `backend_url` (for example `https://llm-eaas.onrender.com`)
+  - `frontend_url` (for example `https://frontend-chi-flame-36.vercel.app`)
+  - `run_evaluation` (`true` for full validation, `false` for fast verification)
+- Workflow file: `.github/workflows/production-verify.yml`
+
 ### Core Health
 - `curl -sSf http://localhost:8000/health`
 - Expected response: `{"status":"ok"}`
